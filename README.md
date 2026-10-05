@@ -1,89 +1,90 @@
-# Forza 4
+# Connect Four
 
-Forza 4 in Java con interfaccia grafica Swing, griglia configurabile e un avversario controllato dal computer tramite l'algoritmo **Minimax con potatura alpha-beta**.
+Connect Four in Java with a Swing GUI, a configurable board and a computer opponent powered by **minimax with alpha-beta pruning**.
 
 <p align="center">
-  <img src="docs/screenshots/06-partita-6x7.png" alt="Partita in corso su griglia 6x7" width="720">
+  <img src="docs/screenshots/06-game-6x7.png" alt="Game in progress on a 6x7 board" width="720">
 </p>
 
-## Funzionalità
+## Features
 
-- Griglia configurabile da **4 a 8** righe e colonne
-- Tre modalità di gioco:
-  - **Umano vs Umano**, con nomi personalizzabili
-  - **Umano vs Computer**: Minimax ricorsivo con potatura alpha-beta (profondità 6)
-  - **Umano vs AI**: la mossa viene chiesta a Gemini tramite API REST
-- Animazione di caduta dei gettoni con gravità e rimbalzo
-- Cronologia delle mosse, evidenziazione della combinazione vincente
-- Effetti sonori generati dal programma, senza file audio
-- Grafica in stile disegnato a mano su foglio a righe
+- Board size from **4 to 8** rows and columns
+- Three game modes:
+  - **Human vs Human**, with custom player names
+  - **Human vs Computer**: recursive minimax with alpha-beta pruning (depth 6)
+  - **Human vs AI**: moves are requested from Google Gemini through its REST API
+- Falling-disc animation with gravity and bounce
+- Move history and highlighted winning line
+- Sound effects synthesized at runtime, no audio files
+- Hand-drawn notebook visual style
 
-Nessuna libreria esterna: solo il JDK.
+No external libraries: only the JDK.
 
-## Requisiti
+> The user interface is in Italian.
 
-- Java **11** o superiore
+## Requirements
 
-## Avvio
+- Java **11** or later
+
+## Run
 
 ```bash
 javac -d out src/*.java
 java -cp out Main
 ```
 
-### Modalità AI (opzionale)
+### AI mode (optional)
 
-Serve una chiave gratuita di [Google AI Studio](https://aistudio.google.com). Si può incollare nella schermata iniziale oppure impostare come variabile d'ambiente:
+Requires a free API key from [Google AI Studio](https://aistudio.google.com). Paste it in the start screen or set it as an environment variable:
 
 ```bash
-export GEMINI_API_KEY="la-tua-chiave"
+export GEMINI_API_KEY="your-key"
 ```
 
-La chiave non è salvata nel codice. Se la richiesta fallisce, la partita continua con una mossa di riserva.
+The key is never stored in the source code. If a request fails, the game falls back to a valid move and keeps going.
 
-## Screenshot
+## Screenshots
 
-| Schermata iniziale | Modalità AI |
+| Start screen | AI mode |
 |---|---|
-| ![Schermata iniziale](docs/screenshots/01-schermata-iniziale.png) | ![Schermata iniziale modalità AI](docs/screenshots/02-schermata-iniziale-ai.png) |
+| ![Start screen](docs/screenshots/01-start-screen.png) | ![Start screen in AI mode](docs/screenshots/02-start-screen-ai-mode.png) |
 
-| Partita 4x4 | Partita 8x8 |
+| 4x4 board | 8x8 board |
 |---|---|
-| ![Partita 4x4](docs/screenshots/04-partita-4x4.png) | ![Partita 8x8](docs/screenshots/08-partita-8x8.png) |
+| ![4x4 board](docs/screenshots/04-game-4x4.png) | ![8x8 board](docs/screenshots/08-game-8x8.png) |
 
-| Vittoria | Pareggio |
+| Win | Draw |
 |---|---|
-| ![Vittoria 6x7](docs/screenshots/11-vittoria-6x7.png) | ![Pareggio 4x4](docs/screenshots/14-pareggio-4x4.png) |
+| ![Win on a 6x7 board](docs/screenshots/11-win-6x7.png) | ![Draw on a 4x4 board](docs/screenshots/14-draw-4x4.png) |
 
-Tutti gli screenshot sono in [`docs/screenshots`](docs/screenshots).
+More in [`docs/screenshots`](docs/screenshots).
 
-## Struttura del progetto
+## Project structure
 
 ```
 src/
-├── Main.java                 punto di ingresso
-├── SchermataIniziale.java    finestra di configurazione
-├── MainGUI.java              finestra di gioco
-├── GrigliaPanel.java         disegno del tabellone e animazioni
-├── Matita.java               funzioni di disegno in stile "a mano"
-├── Partita.java              gestione dei turni (thread separato dalla GUI)
-├── Griglia.java              stato della griglia e controllo vittoria
-├── Giocatore.java            interfaccia comune ai giocatori
-├── GiocatoreUmanoGUI.java    attende il clic (wait/notify)
-├── GiocatoreUmano.java       versione da console (prima versione del progetto)
-├── GiocatoreComputer.java    giocatore che usa l'IA
-├── IA.java                   Minimax con potatura alpha-beta
-├── GiocatoreAI.java          giocatore che interroga Gemini
-├── ClienteAI.java            chiamata HTTP all'API di Gemini
-└── Suoni.java                sintesi degli effetti sonori
-relazione/                    relazione scolastica (PDF) e script per generarla
-docs/screenshots/             screenshot dell'interfaccia
+├── Main.java                 entry point
+├── SchermataIniziale.java    start screen (board size, game mode)
+├── MainGUI.java              game window
+├── GrigliaPanel.java         board rendering and animations
+├── Matita.java               hand-drawn style drawing helpers
+├── Partita.java              turn loop, runs on its own thread
+├── Griglia.java              board state and win detection
+├── Giocatore.java            common player interface
+├── GiocatoreUmanoGUI.java    human player, waits for a click (wait/notify)
+├── GiocatoreUmano.java       console player (first version of the project)
+├── GiocatoreComputer.java    computer player
+├── IA.java                   minimax with alpha-beta pruning
+├── GiocatoreAI.java          player backed by Gemini
+├── ClienteAI.java            HTTP client for the Gemini API
+└── Suoni.java                sound synthesis
+docs/screenshots/             screenshots of the GUI
 ```
 
-## Come funziona l'IA
+## How the computer plays
 
-Per ogni colonna giocabile, `IA` simula la mossa su una copia della griglia e richiama ricorsivamente `minimax`, alternando il turno che massimizza (computer) e quello che minimizza (avversario), fino a profondità 6. Le posizioni non finali vengono valutate contando le "finestre" di 4 celle favorevoli a ciascun giocatore. La potatura alpha-beta scarta i rami che non possono cambiare la decisione. Vittorie e sconfitte sono pesate anche in base alla profondità, così il computer preferisce vincere subito e rimandare il più possibile una sconfitta.
+For every playable column, `IA` simulates the move on a copy of the board and calls `minimax` recursively, alternating the maximizing player (computer) and the minimizing player (opponent), up to depth 6. Non-terminal positions are scored by counting the 4-cell windows that favour each player. Alpha-beta pruning skips branches that cannot change the result. Wins and losses are also weighted by depth, so the computer prefers faster wins and delays losses as long as possible.
 
-## Autore
+## Author
 
-Razvon Lukian, classe 5D
+Razvon Lukian
