@@ -1,37 +1,37 @@
 /**
  * Human player for the Swing version: the game thread waits here until
- * {@link GrigliaPanel} reports a click through {@link #riceviClick(int)}.
+ * {@link BoardPanel} reports a click through {@link #receiveClick(int)}.
  */
-public class GiocatoreUmanoGUI implements Giocatore {
+public class HumanPlayer implements Player {
 
     private int id;
-    private Integer colonnaCliccata;
+    private Integer clickedColumn;
 
-    public GiocatoreUmanoGUI(int id) {
+    public HumanPlayer(int id) {
         this.id = id;
     }
 
     /** Blocks until a column is clicked; returns -1 if the game thread is interrupted. */
-    public synchronized int sceglieMossa(Griglia griglia) {
-        colonnaCliccata = null;
+    public synchronized int chooseMove(Board board) {
+        clickedColumn = null;
 
-        boolean interrotto = false;
+        boolean interrupted = false;
 
-        while (colonnaCliccata == null && !interrotto) {
+        while (clickedColumn == null && !interrupted) {
             try {
                 wait();
             } catch (InterruptedException e) {
-                interrotto = true;
+                interrupted = true;
                 // Don't wait again: with the interrupt flag set, wait() would throw immediately.
                 Thread.currentThread().interrupt();
             }
         }
 
-        return interrotto ? -1 : colonnaCliccata;
+        return interrupted ? -1 : clickedColumn;
     }
 
-    public synchronized void riceviClick(int colonna) {
-        colonnaCliccata = colonna;
+    public synchronized void receiveClick(int column) {
+        clickedColumn = column;
         notify();
     }
 

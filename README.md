@@ -20,8 +20,6 @@ Connect Four in Java with a Swing GUI, a configurable board and a computer oppon
 
 No external libraries: only the JDK.
 
-> The user interface is in Italian.
-
 ## Requirements
 
 - Java **11** or later
@@ -64,26 +62,26 @@ More in [`docs/screenshots`](docs/screenshots).
 ```
 src/
 ├── Main.java                 entry point
-├── SchermataIniziale.java    start screen (board size, game mode)
-├── MainGUI.java              game window
-├── GrigliaPanel.java         board rendering and animations
-├── Matita.java               hand-drawn style drawing helpers
-├── Partita.java              turn loop, runs on its own thread
-├── Griglia.java              board state and win detection
-├── Giocatore.java            common player interface
-├── GiocatoreUmanoGUI.java    human player, waits for a click (wait/notify)
-├── GiocatoreUmano.java       console player (first version of the project)
-├── GiocatoreComputer.java    computer player
-├── IA.java                   minimax with alpha-beta pruning
-├── GiocatoreAI.java          player backed by Gemini
-├── ClienteAI.java            HTTP client for the Gemini API
-└── Suoni.java                sound synthesis
+├── StartScreen.java          start screen (board size, game mode)
+├── GameWindow.java           game window
+├── BoardPanel.java           board rendering and animations
+├── Sketch.java               hand-drawn style drawing helpers
+├── Game.java                 turn loop, runs on its own thread
+├── Board.java                board state and win detection
+├── Player.java               common player interface
+├── HumanPlayer.java          human player, waits for a click (wait/notify)
+├── ConsolePlayer.java        console player (first version of the project)
+├── ComputerPlayer.java       computer player
+├── MinimaxAI.java            minimax with alpha-beta pruning
+├── GeminiPlayer.java         player backed by Gemini
+├── GeminiClient.java         HTTP client for the Gemini API
+└── Sounds.java               sound synthesis
 docs/screenshots/             screenshots of the GUI
 ```
 
 ## How the computer plays
 
-For every playable column, `IA` simulates the move on a copy of the board and calls `minimax` recursively, alternating the maximizing player (computer) and the minimizing player (opponent), up to depth 6. Non-terminal positions are scored by counting the 4-cell windows that favour each player. Alpha-beta pruning skips branches that cannot change the result. Wins and losses are also weighted by depth, so the computer prefers faster wins and delays losses as long as possible.
+For every playable column, `MinimaxAI` simulates the move on a copy of the board (`Board.copy()`) and calls `minimax` recursively, alternating the maximizing player (computer) and the minimizing player (opponent), up to depth 6. Non-terminal positions are scored by `evaluate`, counting the 4-cell windows that favour each player. Alpha-beta pruning skips branches that cannot change the result. Wins and losses are also weighted by depth, so the computer prefers faster wins and delays losses as long as possible.
 
 ## Author
 
