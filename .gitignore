@@ -1,9 +1,9 @@
-# file compilati
+# build output
 out/
 bin/
 *.class
 
-# file di sistema / editor
+# OS and editor files
 .DS_Store
 .vscode/
 .idea/
