@@ -8,8 +8,3 @@ bin/
 .vscode/
 .idea/
 
-# appunti personali, non fanno parte del progetto
-STATO-SESSIONE.md
-struttura-progetto.txt
-Prompt_per_Claude_relazione_Forza4.md
-prompt-gui-disegnata-a-mano.md
